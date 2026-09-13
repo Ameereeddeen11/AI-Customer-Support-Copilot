@@ -1,3 +1,7 @@
+"""
+This file is used to index the documents in the catalog into a ChromaDB collection.
+"""
+
 import os
 import sys
 import chromadb
