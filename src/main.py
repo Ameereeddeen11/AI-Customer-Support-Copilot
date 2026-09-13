@@ -1,16 +1,28 @@
-# This is a sample Python script.
+"""
+This is a simple file to verify that the ollama package is working correctly.
+It will just send a prompt to the model and print the response.
+"""
 
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
+import ollama
 
+def ask_llm(
+    prompt: str,
+    model: str = "qwen2.5:14b"
+) -> str:
+    response = ollama.chat(
+        model=model,
+        messages=[
+            {
+                "role": "user",
+                "content": prompt,
+            }
+        ],
+    )
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
+    return response["message"]["content"]
 
+if __name__ == "__main__":
+    question: str = "Explain to me in one sentence what an embedding is, as if I were a complete beginner."
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    print(f"Question: {question}\n")
+    print(f"Answer: {ask_llm(question)}")
