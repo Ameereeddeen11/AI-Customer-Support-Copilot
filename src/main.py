@@ -1,28 +1,35 @@
-"""
-This is a simple file to verify that the ollama package is working correctly.
-It will just send a prompt to the model and print the response.
-"""
+from fastapi import FastAPI
+from pydantic import BaseModel
+from rag_query import ask, find_context
 
-import ollama
+app = FastAPI(
+    title="Rag Query API",
+    description="RAG Query API is for answering customer questions based on the product catalog and FAQs",
+    version="1.0.0"
+)
 
-def ask_llm(
-    prompt: str,
-    model: str = "qwen2.5:14b"
-) -> str:
-    response = ollama.chat(
-        model=model,
-        messages=[
-            {
-                "role": "user",
-                "content": prompt,
-            }
-        ],
+class QuestionRequest(BaseModel):
+    question: str
+
+class QuestionResponse(BaseModel):
+    answer: str
+    context: list[str]
+
+@app.get("/")
+def root():
+    return {
+        "status": "ok",
+        "message": "Welcome to the RAG Query API"
+    }
+
+@app.post("/ask", response_model=QuestionResponse)
+def ask_question(request: QuestionRequest):
+    found = find_context(request.question)
+    resources = [meta["name"] for _, meta, _ in found]
+
+    answer_text = ask(request.question)
+
+    return QuestionResponse(
+        answer=answer_text,
+        context=resources
     )
-
-    return response["message"]["content"]
-
-if __name__ == "__main__":
-    question: str = "Explain to me in one sentence what an embedding is, as if I were a complete beginner."
-
-    print(f"Question: {question}\n")
-    print(f"Answer: {ask_llm(question)}")

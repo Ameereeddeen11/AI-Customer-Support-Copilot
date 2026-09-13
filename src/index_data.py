@@ -17,7 +17,7 @@ from data.catalog import get_documention
 print("Loading embedding model...")
 model = SentenceTransformer("paraphrase-multilingual-MiniLM-L12-v2")
 
-client = chromadb.PersistentClient(path="./chrome_db")
+client = chromadb.PersistentClient(path="./chroma_db")
 
 collection = client.get_or_create_collection(name="e-shop-catalog")
 

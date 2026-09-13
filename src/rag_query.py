@@ -6,23 +6,25 @@ import os.path
 
 import ollama
 import chromadb
+from pathlib import Path
 from sentence_transformers import SentenceTransformer
 
 model = SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')
 
-chroma_path = os.path.join(
-    os.path.dirname(
-        os.path.abspath(__file__)
-    ),
-    "..",
-    "chrome_db"
-)
+# chroma_path = os.path.join(
+#     os.path.dirname(
+#         os.path.abspath(__file__)
+#     ),
+#     "..",
+#     "chroma_db"
+# )
 
-client = chromadb.PersistentClient(path="./chrome_db")
+chroma_path = Path(__file__).parent.parent / "chroma_db"
+client = chromadb.PersistentClient(path=str(chroma_path))
 collection = client.get_or_create_collection(name="e-shop-catalog")
 
 if collection.count() == 0:
-    print("VAROVÁNÍ: kolekce je prázdná! Nejdřív spusť `python src/index_data.py`.\n")
+    print("VAROVÁNÍ: kolekce je prázdná! Nejdřív spusť `cd ..` `python src/index_data.py`.\n")
 
 def find_context(
     query: str,
