@@ -164,3 +164,4 @@ cython_debug/
 
 # Chrome vecton database
 chrome_db/
+chroma_db/
