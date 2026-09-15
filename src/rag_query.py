@@ -87,7 +87,7 @@ def ask(
 
     prompt = create_prompt(query, found)
 
-    response = ollama.chat(
+    response = ollama_client.chat(
         model=model_llm,
         messages=[{
             "role": "user",
