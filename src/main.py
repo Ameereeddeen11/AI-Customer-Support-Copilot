@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-from rag_query import ask, find_context
+from src.rag_query import ask, find_context
 
 app = FastAPI(
     title="Rag Query API",

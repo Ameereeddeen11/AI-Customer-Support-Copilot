@@ -2,29 +2,22 @@
 This script demonstrates a simple retrieval-augmented generation (RAG) approach for answering customer support queries based on a product catalog.
 It uses a vector database to find relevant context and then generates responses using a language model.
 """
-import os.path
-
+import os
 import ollama
 import chromadb
-from pathlib import Path
 from sentence_transformers import SentenceTransformer
+
+OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
+ollama_client = ollama.Client(host=OLLAMA_HOST)
 
 model = SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')
 
-# chroma_path = os.path.join(
-#     os.path.dirname(
-#         os.path.abspath(__file__)
-#     ),
-#     "..",
-#     "chroma_db"
-# )
-
-chroma_path = Path(__file__).parent.parent / "chroma_db"
+chroma_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "chroma_db")
 client = chromadb.PersistentClient(path=str(chroma_path))
 collection = client.get_or_create_collection(name="e-shop-catalog")
 
 if collection.count() == 0:
-    print("VAROVÁNÍ: kolekce je prázdná! Nejdřív spusť `cd ..` `python src/index_data.py`.\n")
+    print("WARRNING: collection is empty! First run `cd ..` `python src/index_data.py`.\n")
 
 def find_context(
     query: str,
@@ -94,7 +87,7 @@ def ask(
 
     prompt = create_prompt(query, found)
 
-    response = ollama.chat(
+    response = ollama_client.chat(
         model=model_llm,
         messages=[{
             "role": "user",
