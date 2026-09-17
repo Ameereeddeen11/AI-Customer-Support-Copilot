@@ -165,4 +165,7 @@ cython_debug/
 # Chrome vecton database
 chroma_db/
 
+# Fake Orders database
+orders.db
+
 .*DS_Store
